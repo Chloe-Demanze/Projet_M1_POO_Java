@@ -65,7 +65,10 @@ mvn test
   groups them by category for the menu.
 - `service.ArmyBuilderService`: budget validation when adding groups and units.
 - `service.CombatService`: battle resolution (the core business logic).
-- `service.BattleResult`: winner (if any), number of rounds, combat log.
+- `service.BattleResult`: winner (if any), number of rounds, combat log. The winner is
+  stored as a `String` that is `null` for a draw; `getWinner()` returns
+  `Optional.ofNullable(winner)` (Optional is used only as a return type), and
+  `ArmyPrinter` reads it with `ifPresentOrElse`.
 - `util.UnitCatalogLoader`: implements `UnitCatalogRepository` by reading `units_catalog.csv`.
 - `util.ConsoleInputReader` / `util.ArmyPrinter`: console I/O, kept out of the domain model.
 - `Application`: entry point; `main` wires the objects together and the menu loop delegates
@@ -91,14 +94,10 @@ mvn test
    `UnitFactory.checkCatalog()` to build every row once as a dry run, so an invalid row
    (unknown category/subtype, negative stats...) stops the application with a clear
    message at startup instead of failing in the middle of a game. The value rules
-   themselves live in the model constructors, so they are written only once.
-6. **`Optional` is only a return type.** `BattleResult` stores the winner as a `String`
-   that is `null` for a draw, and `getWinner()` returns `Optional.ofNullable(winner)`.
-   Callers never see `null`: `ArmyPrinter` uses `ifPresentOrElse` to print either the
-   winner or "Draw".
-7. **The category is an enum, not a string.** The CSV `category` column is converted to
-   `UnitCategory` when the file is read, so an unknown category is rejected by the loader
-   with the line number, and the rest of the code cannot receive a misspelled value.
+   themselves live in the model constructors, so they are written only once. The CSV
+   `category` column is converted to the `UnitCategory` enum as soon as the file is read,
+   so an unknown category is rejected with its line number and the rest of the code never
+   handles a misspelled string.
 
 ## Where inheritance is used
 
