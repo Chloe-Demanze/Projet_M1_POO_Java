@@ -74,7 +74,7 @@ class ArmyBuilderServiceTest {
                 () -> service.addUnitToGroup(army, group, infantryTemplate(25)));
 
         // Assert
-        assertEquals("Cannot add a unit costing 25 points: only 20 points remaining.", e.getMessage());
+        assertEquals("Cannot add unit \"Grunt\" costing 25 points: only 20 points remaining.", e.getMessage());
         assertTrue(group.getUnits().isEmpty());
     }
 
@@ -90,7 +90,7 @@ class ArmyBuilderServiceTest {
                 () -> service.addGroup(army, veterans));
 
         // Assert
-        assertEquals("Cannot add a unit costing 60 points: only 50 points remaining.", e.getMessage());
+        assertEquals("Cannot add group \"Veterans\" costing 60 points: only 50 points remaining.", e.getMessage());
         assertTrue(army.getGroups().isEmpty());
     }
 

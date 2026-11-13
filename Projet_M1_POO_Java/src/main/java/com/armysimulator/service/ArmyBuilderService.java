@@ -22,7 +22,7 @@ public class ArmyBuilderService {
     public void addGroup(Army army, Group group) throws InsufficientPointsException {
         int cost = group.getTotalPoints();
         if (cost > army.getRemainingPoints()) {
-            throw new InsufficientPointsException(cost, army.getRemainingPoints());
+            throw new InsufficientPointsException("group \"" + group.getName() + "\"", cost, army.getRemainingPoints());
         }
         army.addGroup(group);
     }
@@ -34,7 +34,8 @@ public class ArmyBuilderService {
             throw new IllegalArgumentException("Group \"" + group.getName() + "\" is not part of army \"" + army.getName() + "\".");
         }
         if (template.getCost() > army.getRemainingPoints()) {
-            throw new InsufficientPointsException(template.getCost(), army.getRemainingPoints());
+            throw new InsufficientPointsException("unit \"" + template.getName() + "\"", template.getCost(),
+                    army.getRemainingPoints());
         }
         Unit unit = unitFactory.create(template);
         group.addUnit(unit);

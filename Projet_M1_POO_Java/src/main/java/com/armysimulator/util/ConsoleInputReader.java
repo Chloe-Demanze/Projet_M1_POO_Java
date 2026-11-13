@@ -1,5 +1,6 @@
 package com.armysimulator.util;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 // Reads and checks user input, asks again until it's valid
@@ -40,7 +41,7 @@ public class ConsoleInputReader {
     public boolean confirm(String prompt) {
         while (true) {
             System.out.print(prompt + " (y/n): ");
-            String value = scanner.nextLine().trim().toLowerCase();
+            String value = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
             if (value.equals("y") || value.equals("yes")) {
                 return true;
             }
