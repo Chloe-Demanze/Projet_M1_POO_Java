@@ -4,17 +4,19 @@ import com.armysimulator.exception.ArmySimulationException;
 import com.armysimulator.model.Army;
 import com.armysimulator.model.Faction;
 import com.armysimulator.model.Group;
+import com.armysimulator.model.UnitCategory;
 import com.armysimulator.model.UnitTemplate;
 import com.armysimulator.service.ArmyBuilderService;
 import com.armysimulator.service.BattleResult;
 import com.armysimulator.service.CombatService;
+import com.armysimulator.service.UnitCatalogRepository;
 import com.armysimulator.service.UnitCatalogService;
+import com.armysimulator.service.UnitFactory;
 import com.armysimulator.util.ArmyPrinter;
 import com.armysimulator.util.ConsoleInputReader;
 import com.armysimulator.util.UnitCatalogLoader;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,17 +44,13 @@ public class Application {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        try (InputStream catalogStream = Application.class.getResourceAsStream(CATALOG_RESOURCE)) {
-            if (catalogStream == null) {
-                System.out.println("Fatal error: catalog file " + CATALOG_RESOURCE + " not found on classpath.");
-                return;
-            }
-            List<UnitTemplate> templates = new UnitCatalogLoader().load(catalogStream);
-            ArmyBuilderService armyBuilderService = new ArmyBuilderService();
-            armyBuilderService.checkCatalog(templates);
+        try {
+            UnitFactory unitFactory = new UnitFactory();
+            UnitCatalogRepository repository = new UnitCatalogLoader(CATALOG_RESOURCE);
+            UnitCatalogService catalogService = new UnitCatalogService(repository, unitFactory);
 
-            new Application(new ConsoleInputReader(scanner), new ArmyPrinter(), new UnitCatalogService(templates),
-                    armyBuilderService, new CombatService()).run();
+            new Application(new ConsoleInputReader(scanner), new ArmyPrinter(), catalogService,
+                    new ArmyBuilderService(unitFactory), new CombatService()).run();
         } catch (IOException | ArmySimulationException e) {
             System.out.println("Fatal error while loading the unit catalog: " + e.getMessage());
         }
@@ -123,12 +121,12 @@ public class Application {
 
         Group group = chooseGroup("Choose a group:");
 
-        List<String> categories = catalogService.getCategories();
+        List<UnitCategory> categories = catalogService.getCategories();
         System.out.println("Choose a unit category:");
         for (int i = 0; i < categories.size(); i++) {
             System.out.println((i + 1) + ". " + categories.get(i));
         }
-        String category = categories.get(input.readInRange("Choice: ", 1, categories.size()) - 1);
+        UnitCategory category = categories.get(input.readInRange("Choice: ", 1, categories.size()) - 1);
         List<UnitTemplate> templates = catalogService.getTemplates(category);
 
         System.out.println("Available units (" + army.getRemainingPoints() + " points remaining):");

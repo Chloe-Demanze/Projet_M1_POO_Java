@@ -1,27 +1,35 @@
 package com.armysimulator.service;
 
+import com.armysimulator.exception.InvalidUnitDataException;
+import com.armysimulator.model.UnitCategory;
 import com.armysimulator.model.UnitTemplate;
 
+import java.io.IOException;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-// Units available in the catalog, sorted by category
+// Units available in the catalog, sorted by category.
+// Loads the rows from a repository and checks every one of them at startup.
 public class UnitCatalogService {
 
-    private final Map<String, List<UnitTemplate>> templatesByCategory;
+    private final Map<UnitCategory, List<UnitTemplate>> templatesByCategory;
 
-    public UnitCatalogService(List<UnitTemplate> templates) {
+    public UnitCatalogService(UnitCatalogRepository repository, UnitFactory unitFactory)
+            throws IOException, InvalidUnitDataException {
+        List<UnitTemplate> templates = repository.findAll();
+        unitFactory.checkCatalog(templates);
         this.templatesByCategory = templates.stream()
-                .collect(Collectors.groupingBy(UnitTemplate::getCategory, TreeMap::new, Collectors.toUnmodifiableList()));
+                .collect(Collectors.groupingBy(UnitTemplate::getCategory,
+                        () -> new EnumMap<>(UnitCategory.class), Collectors.toUnmodifiableList()));
     }
 
-    public List<String> getCategories() {
+    public List<UnitCategory> getCategories() {
         return List.copyOf(templatesByCategory.keySet());
     }
 
-    public List<UnitTemplate> getTemplates(String category) {
+    public List<UnitTemplate> getTemplates(UnitCategory category) {
         return templatesByCategory.getOrDefault(category, List.of());
     }
 }

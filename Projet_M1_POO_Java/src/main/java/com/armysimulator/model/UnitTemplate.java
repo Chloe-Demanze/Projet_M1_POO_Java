@@ -1,9 +1,11 @@
 package com.armysimulator.model;
 
+import java.util.Objects;
+
 // One line of the csv file
 public class UnitTemplate {
 
-    private final String category;
+    private final UnitCategory category;
     private final String subtype;
     private final String name;
     private final int cost;
@@ -12,9 +14,9 @@ public class UnitTemplate {
     private final int health;
     private final int capacity;
 
-    public UnitTemplate(String category, String subtype, String name, int cost,
+    public UnitTemplate(UnitCategory category, String subtype, String name, int cost,
                         int attack, int defense, int health, int capacity) {
-        this.category = category;
+        this.category = Objects.requireNonNull(category, "Unit category must not be null.");
         this.subtype = subtype;
         this.name = name;
         this.cost = cost;
@@ -24,7 +26,7 @@ public class UnitTemplate {
         this.capacity = capacity;
     }
 
-    public String getCategory() {
+    public UnitCategory getCategory() {
         return category;
     }
 
