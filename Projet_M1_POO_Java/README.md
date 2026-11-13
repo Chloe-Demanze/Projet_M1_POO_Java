@@ -57,7 +57,7 @@ mvn test
 1. **Stats live in the catalog file, not in Java code.** `InfantryType`/`VehicleType` are
    pure classification enums; attack/defense/health/cost come from `UnitTemplate` rows
    loaded at startup. This was the only way to make "load data from a file" a real
-   requirement rather than a cosmetic one — otherwise the file would just mirror constants
+   requirement rather than a cosmetic one, otherwise the file would just mirror constants
    already hardcoded in the enums.
 2. **Custom exceptions are checked**, extending `ArmySimulationException extends Exception`.
    This forces every call site to handle business errors explicitly with try/catch, instead
@@ -104,12 +104,12 @@ and leaves the computation of actual combat power to the subclasses.
 
 ## Custom exceptions
 
-- `exception.ArmySimulationException` — base checked exception for all domain errors.
-- `exception.InsufficientPointsException` — adding a group/unit would exceed the army's
+- `exception.ArmySimulationException`, base checked exception for all domain errors.
+- `exception.InsufficientPointsException`, adding a group/unit would exceed the army's
   point budget.
-- `exception.EmptyGroupException` — a battle was requested with a group that has no living
+- `exception.EmptyGroupException`, a battle was requested with a group that has no living
   units.
-- `exception.InvalidUnitDataException` — the catalog file is missing, empty, or has a
+- `exception.InvalidUnitDataException`, the catalog file is missing, empty, or has a
   malformed row.
 
 Standard exceptions are also used: `IOException` (reading the catalog file),
@@ -147,6 +147,6 @@ no hardcoded `new Infantry(...)` roster.
 
 ## Data file
 
-`src/main/resources/units_catalog.csv` — columns: `category,subtype,name,cost,attack,defense,health,capacity`.
+`src/main/resources/units_catalog.csv`, columns: `category,subtype,name,cost,attack,defense,health,capacity`.
 `category` is `INFANTRY` or `VEHICLE`; `subtype` is `SOLDIER`/`HEAVY`/`SPECIAL`/`LEADER` for
 infantry and `TRANSPORT`/`COMBAT` for vehicles (case-insensitive).
