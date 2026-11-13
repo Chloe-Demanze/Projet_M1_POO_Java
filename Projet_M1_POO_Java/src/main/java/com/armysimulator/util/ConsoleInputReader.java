@@ -37,6 +37,20 @@ public class ConsoleInputReader {
         }
     }
 
+    public boolean confirm(String prompt) {
+        while (true) {
+            System.out.print(prompt + " (y/n): ");
+            String value = scanner.nextLine().trim().toLowerCase();
+            if (value.equals("y") || value.equals("yes")) {
+                return true;
+            }
+            if (value.equals("n") || value.equals("no")) {
+                return false;
+            }
+            System.out.println("Please answer y or n.");
+        }
+    }
+
     public int readPositiveInt(String prompt) {
         while (true) {
             System.out.print(prompt);

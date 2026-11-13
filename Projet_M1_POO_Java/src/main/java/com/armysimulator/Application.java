@@ -89,6 +89,10 @@ public class Application {
     }
 
     private void createArmy() {
+        // the application manages one army at a time: ask before throwing the current one away
+        if (army != null && !input.confirm("Army \"" + army.getName() + "\" will be replaced and lost. Continue?")) {
+            return;
+        }
         String armyName = input.readNonEmptyLine("Enter the army's name: ");
         System.out.println("Choose a faction:");
         Faction[] factions = Faction.values();
