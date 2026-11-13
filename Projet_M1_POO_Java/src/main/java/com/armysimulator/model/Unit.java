@@ -55,6 +55,7 @@ public abstract class Unit implements Combatant {
         return baseDefense;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -67,6 +68,7 @@ public abstract class Unit implements Combatant {
         return maxHealth;
     }
 
+    @Override
     public int getCurrentHealth() {
         return currentHealth;
     }

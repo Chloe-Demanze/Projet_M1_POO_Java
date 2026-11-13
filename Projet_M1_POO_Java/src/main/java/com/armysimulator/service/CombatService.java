@@ -1,14 +1,14 @@
 package com.armysimulator.service;
 
 import com.armysimulator.exception.EmptyGroupException;
+import com.armysimulator.model.Combatant;
 import com.armysimulator.model.Group;
-import com.armysimulator.model.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-// Battle between two groups, round by round
+// Battle between two groups, round by round.
+// Works only with the Combatant interface: it never needs to know about Unit, Infantry or Vehicle.
 public class CombatService {
 
     private static final int MAX_ROUNDS = 50;
@@ -27,11 +27,11 @@ public class CombatService {
         while (round < MAX_ROUNDS && attackers.hasLivingUnits() && defenders.hasLivingUnits()) {
             round++;
             log.add("--- Round " + round + " ---");
-            strike(attackers, defenders, log);
+            strike(attackers.getLivingUnits(), defenders, log);
             if (!defenders.hasLivingUnits()) {
                 break;
             }
-            strike(defenders, attackers, log);
+            strike(defenders.getLivingUnits(), attackers, log);
         }
 
         String winner = null; // stays null for a draw
@@ -44,13 +44,13 @@ public class CombatService {
         return new BattleResult(winner, round, log);
     }
 
-    private void strike(Group side, Group opposingSide, List<String> log) {
-        for (Unit attacker : side.getLivingUnits()) {
-            Optional<Unit> target = opposingSide.getLivingUnits().stream().findFirst();
-            if (target.isEmpty()) {
+    private void strike(List<? extends Combatant> strikers, Group opposingSide, List<String> log) {
+        for (Combatant attacker : strikers) {
+            List<? extends Combatant> targets = opposingSide.getLivingUnits();
+            if (targets.isEmpty()) {
                 return;
             }
-            Unit defender = target.get();
+            Combatant defender = targets.get(0);
             int damage = Math.max(1, attacker.getAttackPower() - defender.getDefensePower() / 2);
             defender.receiveDamage(damage);
             log.add(attacker.getName() + " hits " + defender.getName() + " for " + damage + " damage"
