@@ -42,10 +42,9 @@ public class ArmyPrinter {
         System.out.println(BLUE + "--------- Battle report ---------" + RESET);
         result.getLog().forEach(System.out::println);
         System.out.println(BLUE + "----------------------------------" + RESET);
-        if (result.getWinner().isPresent()) {
-            System.out.println(GREEN + "Winner: " + result.getWinner().get() + RESET + " after " + result.getRounds() + " round(s).");
-        } else {
-            System.out.println(YELLOW + "Draw" + RESET + " after " + result.getRounds() + " round(s).");
-        }
+        String rounds = " after " + result.getRounds() + " round(s).";
+        result.getWinner().ifPresentOrElse(
+                winner -> System.out.println(GREEN + "Winner: " + winner + RESET + rounds),
+                () -> System.out.println(YELLOW + "Draw" + RESET + rounds));
     }
 }

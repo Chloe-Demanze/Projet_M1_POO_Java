@@ -5,18 +5,18 @@ import java.util.Optional;
 
 public class BattleResult {
 
-    private final Optional<String> winner;
+    private final String winner; // null when the battle is a draw
     private final int rounds;
     private final List<String> log;
 
-    public BattleResult(Optional<String> winner, int rounds, List<String> log) {
+    public BattleResult(String winner, int rounds, List<String> log) {
         this.winner = winner;
         this.rounds = rounds;
-        this.log = log;
+        this.log = List.copyOf(log);
     }
 
     public Optional<String> getWinner() {
-        return winner;
+        return Optional.ofNullable(winner);
     }
 
     public int getRounds() {

@@ -34,13 +34,11 @@ public class CombatService {
             strike(defenders, attackers, log);
         }
 
-        Optional<String> winner;
+        String winner = null; // stays null for a draw
         if (attackers.hasLivingUnits() && !defenders.hasLivingUnits()) {
-            winner = Optional.of(attackers.getName());
+            winner = attackers.getName();
         } else if (defenders.hasLivingUnits() && !attackers.hasLivingUnits()) {
-            winner = Optional.of(defenders.getName());
-        } else {
-            winner = Optional.empty();
+            winner = defenders.getName();
         }
 
         return new BattleResult(winner, round, log);
